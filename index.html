@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学品教育学院 - 高级代词语法测验</title>
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: "Microsoft YaHei", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s;
+        }
+
+        /* Banner 和 Logo */
+        .banner {
+            background: linear-gradient(90deg, #4e54c8, #8f94fb);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .logo-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 20px;
+            background-color: white;
+        }
+        .academy-name { font-size: 28px; font-weight: bold; }
+
+        .quiz-wrapper {
+            width: 100%;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        /* 学生信息卡片 */
+        .student-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .student-info-grid label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .student-info-grid input, .student-info-grid select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .student-info-grid input:focus, .student-info-grid select:focus {
+            outline: none;
+            border-color: #8f94fb;
+            box-shadow: 0 0 0 3px rgba(143, 148, 251, 0.3);
+        }
+        .full-width-field { grid-column: 1 / -1; }
+        
+        /* 题目和选项样式 */
+        .question-text {
+            font-size: 19px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .options-container input[type="radio"] { opacity: 0; position: fixed; width: 0; }
+        .options-container label {
+            display: block;
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            font-size: 16px;
+        }
+        .options-container label:hover { background-color: #e9ecef; border-color: #adb5bd; }
+        .options-container input[type="radio"]:checked + label {
+            background-color: #e8e9ff;
+            border-color: #8f94fb;
+            color: #4e54c8;
+            font-weight: bold;
+        }
+
+        /* 按钮样式 */
+        .button-container { text-align: center; margin-top: 20px; }
+        .quiz-button {
+            background: #28a745;
+            color: white;
+            padding: 15px 35px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(40, 167, 69, 0.2);
+        }
+        #reset-btn {
+            background: #007bff;
+            box-shadow: 0 4px 6px rgba(0, 123, 255, 0.2);
+        }
+        .quiz-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        /* 结果显示区域 */
+        #results-container { display: none; }
+        
+        #encouragement-block {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        #encouragement-svg {
+            width: 80px; height: 80px;
+            margin-bottom: 15px;
+            transition: fill 0.5s;
+        }
+        #encouragement-text { font-size: 22px; font-weight: bold; color: #343a40; }
+
+        /* 专业报告单样式 */
+        #report-card-container {
+            display: none;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .report-header {
+            background: #f8f9fa;
+            padding: 20px 25px;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            align-items: center;
+        }
+        .report-header-icon {
+            width: 32px;
+            height: 32px;
+            margin-right: 15px;
+            fill: #4e54c8;
+        }
+        .report-header h2 {
+            margin: 0;
+            font-size: 22px;
+            color: #343a40;
+        }
+        .report-body { padding: 25px; }
+        .report-student-name {
+            font-size: 26px;
+            font-weight: bold;
+            color: #4e54c8;
+            margin-bottom: 15px;
+        }
+        .report-details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px 25px;
+            margin-bottom: 25px;
+        }
+        .report-detail-item { font-size: 16px; }
+        .report-detail-item strong {
+            color: #6c757d;
+            font-weight: 500;
+            margin-right: 8px;
+        }
+        .report-score-section {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: #f1f3f5;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .report-score-item {
+            border-right: 2px solid #dee2e6;
+            padding: 0 20px;
+            flex-grow: 1;
+        }
+        .report-score-item:last-child { border-right: none; }
+        .report-score-item h3 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        .report-score-item p {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .report-footer {
+            background: #f8f9fa;
+            padding: 10px 25px;
+            border-top: 1px solid #dee2e6;
+            text-align: right;
+            font-size: 12px;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        /* 题目解析卡片 */
+        .result-card { border-left: 5px solid; }
+        .result-card.correct { border-left-color: #28a745; }
+        .result-card.incorrect { border-left-color: #dc3545; }
+        .result-question-title::before {
+            display: inline-block;
+            width: 25px;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .result-card.correct .result-question-title::before { content: "✓"; color: #28a745; }
+        .result-card.incorrect .result-question-title::before { content: "✗"; color: #dc3545; }
+        .user-answer { font-weight: bold; }
+        .user-answer.correct { color: #28a745; }
+        .user-answer.incorrect { color: #dc3545; }
+        .explanation {
+            margin-top: 15px; padding: 15px;
+            background-color: #f1f3f5;
+            border-radius: 8px; font-style: italic;
+            font-size: 15px; border-top: 2px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="banner">
+        <img src="logo.png" alt="学品教育学院 Logo" class="logo-img">
+        <h1 class="academy-name">学品教育学院</h1>
+    </div>
+
+    <div class="quiz-wrapper">
+        <main>
+            <div class="card">
+                <div class="student-info-grid">
+                    <div>
+                        <label for="name">Name (名字):</label>
+                        <input type="text" id="name" name="name" placeholder="请输入姓名">
+                    </div>
+                    <div>
+                        <label for="form">Form (年级):</label>
+                        <input type="text" id="form" name="form" placeholder="请输入年级">
+                    </div>
+                    <div class="full-width-field">
+                        <label for="branch">Branch (分院):</label>
+                        <select id="branch" name="branch">
+                            <option value="">请选择</option>
+                            <option value="permas">Permas总院</option>
+                            <option value="masai">Masai分院</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <form id="quiz-form">
+                <div id="quiz-container"></div>
+                <div class="button-container">
+                    <button type="button" id="submit-btn" class="quiz-button">提交测验</button>
+                    <button type="button" id="reset-btn" class="quiz-button" style="display:none;">再做一组</button>
+                </div>
+            </form>
+
+            <div id="results-container">
+                <div id="report-card-container">
+                    <div class="report-header">
+                        <svg class="report-header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M8,12V14H16V12H8M8,16V18H13V16H8Z" /></svg>
+                        <h2>语法测验成绩报告</h2>
+                    </div>
+                    <div class="report-body">
+                        <p class="report-student-name" id="report-name"></p>
+                        <div class="report-details-grid">
+                            <div class="report-detail-item"><strong>所属分院:</strong> <span id="report-branch"></span></div>
+                            <div class="report-detail-item"><strong>所在年级:</strong> <span id="report-form"></span></div>
+                            <div class="report-detail-item"><strong>测验日期:</strong> <span id="report-date"></span></div>
+                            <div class="report-detail-item"><strong>测验项目:</strong> <span>高级代词语法</span></div>
+                        </div>
+                        <div class="report-score-section">
+                            <div class="report-score-item">
+                                <h3>表现评级</h3>
+                                <p id="report-performance"></p>
+                            </div>
+                            <div class="report-score-item">
+                                <h3>得分</h3>
+                                <p id="report-score"></p>
+                            </div>
+                            <div class="report-score-item">
+                                <h3>正确率</h3>
+                                <p id="report-percentage"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="report-footer">
+                        由学品教育学院生成
+                    </div>
+                </div>
+
+                <div id="encouragement-block" class="card">
+                    <svg id="encouragement-svg" viewBox="0 0 24 24">
+                        <path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"></path>
+                    </svg>
+                    <p id="encouragement-text"></p>
+                </div>
+                
+                <h3 style="text-align:center; color:#555; margin: 30px 0 20px 0;">详细题目解析</h3>
+                <div id="detailed-results"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+    (function() {
+        // --- 完整题库 (100题) ---
+        var allQuestions = [
+            { question: "Neither John nor ___ could answer the question.", options: ["I", "me", "myself", "mine"], answer: 0, explanation: "在 'neither...nor...' 结构中，代词是主语，应使用主格 (I)。" },
+            { question: "Between you and ___, I think we should reconsider.", options: ["I", "me", "myself", "mine"], answer: 1, explanation: "介词 (between) 后面应使用宾格 (me)。" },
+            { question: "My brother is taller than ___.", options: ["I", "me", "myself", "my"], answer: 0, explanation: "完整的句子是 '...taller than I am'。因此使用主格 (I)。" },
+            { question: "The teacher gave the books to Sarah and ___.", options: ["I", "me", "myself", "mine"], answer: 1, explanation: "代词是介词 'to' 的宾语，应使用宾格 (me)。" },
+            { question: "My sister and ___ are going to the cinema.", options: ["I", "me", "myself", "mine"], answer: 0, explanation: "代词是动词 'are going' 的主语，应使用主格 (I)。" },
+            { question: "Everyone finished the test except ___.", options: ["he", "him", "his", "himself"], answer: 1, explanation: "'Except' 在此作介词，后面跟宾格 (him)。" },
+            { question: "Let ___ go to the park.", options: ["we", "us", "our", "ourselves"], answer: 1, explanation: "动词 'Let' 后面总是跟宾格 (us)。'Let's' 是 'Let us' 的缩写。" },
+            { question: "It was ___ who called you last night.", options: ["he", "him", "his", "himself"], answer: 0, explanation: "在 'It is/was...' 句型中，后面的代词通常用主格 (he)。" },
+            { question: "Can you help my friend and ___ with the homework?", options: ["I", "me", "myself", "mine"], answer: 1, explanation: "代词是动词 'help' 的宾语，应使用宾格 (me)。" },
+            { question: "She can type faster than ___.", options: ["him", "he", "his", "himself"], answer: 1, explanation: "完整的句子是 '...faster than he can'。因此使用主格 (he)。" },
+            { question: "Who is there? In formal English, the correct reply is: It's ___.", options: ["I", "me", "myself", "mine"], answer: 0, explanation: "在正式语法中，系动词 'be' (is, am, are) 两边都应是主格。所以 'It is I' 是最规范的回答，尽管口语常用 'It's me'。" },
+            { question: "All the students, including ___ and her, passed the exam.", options: ["he", "him", "his", "himself"], answer: 1, explanation: "介词 'including' 后面应跟宾格 (him)。" },
+            { question: "Our boss wants ___ to finish the report by Friday.", options: ["we", "us", "our", "ourselves"], answer: 1, explanation: "代词是动词 'wants' 的宾语，后面跟不定式，应使用宾格 (us)。" },
+            { question: "The prize was divided between ___ and ___.", options: ["he, I", "him, me", "he, me", "him, I"], answer: 1, explanation: "介词 'between' 后面需要两个宾格代词 (him, me)。" },
+            { question: "No one but ___ knew the secret password.", options: ["she", "her", "hers", "herself"], answer: 1, explanation: "介词 'but' (意为except) 后面应使用宾格 (her)。" },
+            { question: "Just between ___, this project is a bad idea.", options: ["we", "us", "our", "ourselves"], answer: 1, explanation: "介词 'between' 后面应使用宾格 (us)。" },
+            { question: "Is it ___ you are looking for?", options: ["I", "me", "my", "mine"], answer: 1, explanation: "这是一个强调句型，'me' 是 'are looking for' 的宾语。'Are you looking for me?'" },
+            { question: "My parents are much older than ___.", options: ["they", "them", "their", "theirs"], answer: 0, explanation: "完整的句子是 '...older than they are'。因此使用主格 (they)。" },
+            { question: "Would you like to come with ___?", options: ["I", "me", "my", "mine"], answer: 1, explanation: "介词 'with' 后面应使用宾格 (me)。" },
+            { question: "It is ___ who are responsible for this decision.", options: ["we", "us", "our", "ourselves"], answer: 0, explanation: "在 'It is...' 句型中，后面的代词通常用主格 (we)。" },
+            { question: "Is this book ___ or his?", options: ["you", "your", "yours", "yourself"], answer: 2, explanation: "'Yours' 是所有格代词，表示 'your book'，独立使用。" },
+            { question: "That blue car is ___.", options: ["they", "their", "theirs", "them"], answer: 2, explanation: "'Theirs' 是所有格代词，意思是 'their car'，独立使用。" },
+            { question: "The responsibility is all ___.", options: ["your", "yours", "you", "yourself"], answer: 1, explanation: "'Yours' 是所有格代词，表示 'your responsibility'，独立使用。" },
+            { question: "Our house is big, but ___ is bigger.", options: ["they", "their", "theirs", "them"], answer: 2, explanation: "'Theirs' 是所有格代词，意思是 'their house'。" },
+            { question: "The dog wagged ___ tail happily.", options: ["it's", "its", "it", "its'"], answer: 1, explanation: "'Its' 是所有格代词，表示“它的”。'It's' 是 'it is' 的缩写。" },
+            { question: "This is my jacket. Where is ___?", options: ["you", "your", "yours", "yourself"], answer: 2, explanation: "'Yours' 是所有格代词，意思是 'your jacket'。" },
+            { question: "___ phone is ringing, not mine.", options: ["You", "Your", "Yours", "Yourself"], answer: 1, explanation: "'Your' 是所有格形容词，用来修饰名词 'phone'。" },
+            { question: "The decision was ___, not mine.", options: ["her", "she", "hers", "herself"], answer: 2, explanation: "'Hers' 是所有格代词，意思是 'her decision'。" },
+            { question: "A friend of ___ called me this morning.", options: ["me", "my", "I", "mine"], answer: 3, explanation: "双重所有格结构 'a friend of mine'，意思是 'one of my friends'。" },
+            { question: "Look at that cat! ___ fur is so fluffy.", options: ["It's", "Its'", "Its", "It"], answer: 2, explanation: "'Its' 是所有格代词，表示“它的”。'It's' 是 'it is' 的缩写。" },
+            { question: "The fault is ___, not ___. ", options: ["our, their", "ours, theirs", "our, theirs", "ours, their"], answer: 1, explanation: "两个空都需要所有格代词 (ours, theirs)，因为它们后面没有跟名词。" },
+            { question: "I admire ___ patience.", options: ["he", "him", "his", "himself"], answer: 2, explanation: "'His' 在这里是所有格形容词，修饰名词 'patience'。" },
+            { question: "We should be proud of ___ for finishing the project.", options: ["us", "we", "ourself", "ourselves"], answer: 3, explanation: "当主语 'We' 和宾语指代同一群体时，使用反身代词 (ourselves)。" },
+            { question: "The children were able to dress ___ without any help.", options: ["them", "themself", "themselves", "their"], answer: 2, explanation: "主语 'The children' (复数) 和宾语是同一群体，使用复数反身代词 (themselves)。" },
+            { question: "I hurt ___ when I fell off the bike.", options: ["me", "I", "mine", "myself"], answer: 3, explanation: "主语 'I' 和宾语是同一个人，使用反身代词 (myself)。" },
+            { question: "She taught ___ how to play the piano.", options: ["her", "herself", "she", "hers"], answer: 1, explanation: "主语 'She' 和宾语是同一个人，使用反身代词 (herself)。" },
+            { question: "The CEO ___ will attend the meeting.", options: ["him", "he", "hisself", "himself"], answer: 3, explanation: "'Himself' 在这里用作强调，表示“他本人”。注意 'hisself' 是不规范的用法。" },
+            { question: "Please help ___ to some cookies.", options: ["you", "your", "yours", "yourself"], answer: 3, explanation: "'Help yourself' 是一个固定短语，意为“请自便”。" },
+            { question: "The computer will restart ___ after the update.", options: ["it", "its", "itself", "it's"], answer: 2, explanation: "主语 'The computer' (it) 和宾语是同一个事物，使用反身代词 (itself)。" },
+            { question: "My colleague and ___ will present the findings.", options: ["I", "me", "myself", "mine"], answer: 0, explanation: "反身代词 'myself' 不能作主语。这里需要主格代词 (I)。" },
+            { question: "The invitation is for you and ___.", options: ["I", "me", "myself", "mine"], answer: 1, explanation: "反身代词 'myself' 不能作介词 'for' 的宾语。这里需要宾格代词 (me)。" },
+            { question: "He is so arrogant; he only thinks of ___.", options: ["he", "him", "hisself", "himself"], answer: 3, explanation: "主语 'He' 和介词 'of' 的宾语是同一个人，使用反身代词 (himself)。" },
+            { question: "This is the person ___ I met yesterday.", options: ["who", "whom", "which", "whose"], answer: 1, explanation: "代词在从句中作动词 'met' 的宾语 (I met him/her)，所以用 'whom' (正式) 或 'who' (非正式)。在正式测验中 'whom' 是首选。" },
+            { question: "___ do you think will win the game?", options: ["Who", "Whom", "Which", "Whose"], answer: 0, explanation: "代词在从句中作主语 ('[He/She] will win the game')，所以用 'who'。" },
+            { question: "To ___ should I address this letter?", options: ["Who", "Whom", "Which", "Whose"], answer: 1, explanation: "代词是介词 'To' 的宾语，必须用 'whom'。" },
+            { question: "She is the only one ___ understands me.", options: ["who", "whom", "that", "whose"], answer: 0, explanation: "代词在从句中作动词 'understands' 的主语，用 'who'。'that' 也可以，但 'who' 更常用指人。" },
+            { question: "The manager, ___ I respect greatly, is retiring next year.", options: ["who", "whom", "that", "which"], answer: 1, explanation: "代词在从句中作动词 'respect' 的宾语 (I respect him/her)，所以用 'whom'。" },
+            { question: "___ did they hire for the new position?", options: ["Who", "Whom", "Which", "Whose"], answer: 1, explanation: "代词是动词 'hire' 的宾语 (They hired him/her)，所以用 'whom'。" },
+            { question: "The man ___ lives next door is a doctor.", options: ["who", "whom", "which", "whose"], answer: 0, explanation: "代词在从句中作动词 'lives' 的主语，用 'who'。" },
+            { question: "I don't know with ___ he was speaking.", options: ["who", "whom", "which", "whose"], answer: 1, explanation: "代词是介词 'with' 的宾语，必须用 'whom'。" },
+            { question: "He is the candidate ___ we believe is best for the job.", options: ["who", "whom", "which", "whose"], answer: 0, explanation: "这是一个复杂句。'we believe' 是插入语，'who' 是后面 'is best for the job' 的主语。" },
+            { question: "This is the author about ___ we were talking.", options: ["who", "whom", "which", "whose"], answer: 1, explanation: "代词是介词 'about' 的宾语，必须用 'whom'。" },
+            { question: "The team and ___ coach are celebrating the victory.", options: ["it's", "its", "it", "their"], answer: 1, explanation: "'Team' 在这里指一个整体，拥有教练，所以用所有格 'its'。" },
+            { question: "Each of the girls has ___ own dreams.", options: ["her", "their", "hers", "theirs"], answer: 0, explanation: "'Each' 是单数，传统语法要求用单数代词 (her)。现代英语中 'their' 也被接受以避免性别指向。" },
+            { question: "The jury has reached ___ verdict.", options: ["its", "it's", "their", "theirs"], answer: 0, explanation: "'Jury' (陪审团) 作为一个整体单位，使用单数代词 'its'。" },
+            { question: "Neither of the boys remembered to bring ___ ticket.", options: ["his", "their", "he", "him"], answer: 0, explanation: "'Neither' 是单数，传统语法要求用单数代词 'his'。现代英语中 'their' 也被广泛接受。" },
+            { question: "The dog and cat have had ___ dinners.", options: ["its", "their", "it's", "theirs"], answer: 1, explanation: "两个或以上的主语 (dog and cat)，使用复数代词 'their'。" },
+            { question: "A student must submit ___ assignment on time.", options: ["his or her", "their", "his", "her"], answer: 1, explanation: "为了避免性别偏向，现代英语广泛使用单数 'their' 来指代像 'a student' 这样的单数名词。" },
+            { question: "The flock of birds is flying south for ___ winter migration.", options: ["its", "their", "it's", "theirs"], answer: 0, explanation: "集合名词 'flock' (鸟群) 作整体看待时，用单数代词 'its'。" },
+            { question: "Everybody should do ___ best.", options: ["his", "her", "their", "his or her"], answer: 2, explanation: "'Everybody' 是单数，但为避免性别偏向，'their' 是最常用的代词。" },
+            { question: "The company will hold ___ annual meeting next month.", options: ["it's", "its", "their", "theirs"], answer: 1, explanation: "'Company' 作为一个整体单位，使用单数所有格 'its'。" },
+            { question: "Was it ___ that you saw at the library?", options: ["she", "her", "hers", "herself"], answer: 1, explanation: "强调句型，'her' 是动词 'saw' 的宾语。'Did you see her at the library?'" },
+            { question: "The new car is not as fast as ___.", options: ["their", "theirs", "them", "they"], answer: 1, explanation: "这里比较的是两辆车，完整的说法是 '...not as fast as their car is'。因此用所有格代词 'theirs'。" },
+            { question: "I can't find ___ keys anywhere.", options: ["me", "my", "mine", "myself"], answer: 1, explanation: "需要一个所有格形容词来修饰名词 'keys'。" },
+            { question: "Both my brother and ___ are engineers.", options: ["me", "myself", "I", "my"], answer: 2, explanation: "'I' 是句子的主语之一。" },
+            { question: "Let's keep this secret between ___.", options: ["we", "us", "our", "ourselves"], answer: 1, explanation: "介词 'between' 后面跟宾格代词 'us'。" },
+            { question: "He is a friend of ___.", options: ["her", "she", "hers", "herself"], answer: 2, explanation: "双重所有格结构 'a friend of hers'，意思是 'one of her friends'。" },
+            { question: "The two friends looked at ___ and smiled.", options: ["themself", "themselves", "each other", "one another"], answer: 2, explanation: "'Each other' 通常用于两个人之间，'one another' 用于多于两个人。" },
+            { question: "All members of the team support ___.", options: ["each other", "one another", "themselves", "them"], answer: 1, explanation: "'One another' 通常用于多于两个人之间。" },
+            { question: "I am not sure ___ car that is.", options: ["who", "whom", "which", "whose"], answer: 3, explanation: "'Whose' 是所有格关系代词，询问“谁的”。" },
+            { question: "The police asked the man ___ he was.", options: ["who", "whom", "which", "what"], answer: 0, explanation: "这里 'who' 是表语，回答 'He was [John Doe]'。" },
+            { question: "Do you know the woman ___ is sitting over there?", options: ["who", "whom", "which", "whose"], answer: 0, explanation: "代词是动词 'is sitting' 的主语，用 'who'。" },
+            { question: "The problem is not ___, but ___.", options: ["my, your", "mine, yours", "my, yours", "mine, your"], answer: 1, explanation: "两个空都需要所有格代词，因为后面没有跟名词。" },
+            { question: "I did the entire project by ___.", options: ["me", "my", "mine", "myself"], answer: 3, explanation: "'By myself' 意为“独自一人”。" },
+            { question: "She poured ___ a glass of water.", options: ["her", "herself", "she", "hers"], answer: 1, explanation: "主语和宾语是同一个人，用反身代词。" },
+            { question: "The credit for the success goes to ___ and ___.", options: ["he, she", "him, she", "he, her", "him, her"], answer: 3, explanation: "介词 'to' 后面需要两个宾格代词 (him, her)。" },
+            { question: "It seems that ___ made a mistake.", options: ["they", "them", "their", "theirs"], answer: 0, explanation: "代词是动词 'made' 的主语，用 'they'。" },
+            { question: "If I were ___, I would not do that.", options: ["he", "him", "his", "himself"], answer: 1, explanation: "在虚拟语气 'If I were...' 句型中，be动词后面习惯用宾格 'him'，尽管有些语法家认为主格 'he' 也可以。" },
+            { question: "The teacher for ___ I have the most respect is Mr. Smith.", options: ["who", "whom", "which", "whose"], answer: 1, explanation: "代词是介词 'for' 的宾语，必须用 'whom'。" },
+            { question: "This is a matter for you and ___ to decide.", options: ["I", "me", "myself", "my"], answer: 1, explanation: "代词是介词 'for' 的宾语。'for me to decide' 是一个不定式短语作宾语。" },
+            { question: "The committee has submitted ___ report.", options: ["its", "it's", "their", "theirs"], answer: 0, explanation: "'Committee' (委员会) 作整体看待，用单数 'its'。" },
+            { question: "Did you see ___ at the party?", options: ["they", "them", "their", "themselves"], answer: 1, explanation: "代词是动词 'see' 的宾语，用 'them'。" },
+            { question: "He and ___ are best friends.", options: ["I", "me", "myself", "mine"], answer: 0, explanation: "代词是动词 'are' 的主语，用 'I'。" },
+            { question: "The final choice is ___ to make.", options: ["your", "yours", "you", "yourself"], answer: 1, explanation: "'Yours' 在这里是所有格代词，意思是 'your choice to make'。" },
+            { question: "The package was addressed to ___.", options: ["she", "her", "hers", "herself"], answer: 1, explanation: "介词 'to' 后面跟宾格 'her'。" },
+            { question: "They have a bigger house than ___.", options: ["us", "we", "our", "ours"], answer: 3, explanation: "比较的是房子，完整的句子是 '...than our house is'。所以用所有格代词 'ours'。" },
+            { question: "The person ___ phone keeps ringing should turn it off.", options: ["who", "whom", "which", "whose"], answer: 3, explanation: "'Whose' 是所有格关系代词，表示“谁的手机”。" },
+            { question: "My mom and ___ are very close.", options: ["I", "me", "myself", "mine"], answer: 0, explanation: "代词是句子的主语之一，用 'I'。" },
+            { question: "Is this gift for ___?", options: ["they", "them", "their", "theirs"], answer: 1, explanation: "介词 'for' 后面跟宾格 'them'。" },
+            { question: "I want to thank ___ who helped me.", options: ["they", "them", "those", "their"], answer: 2, explanation: "'Those who' 是固定搭配，指“那些...的人”。" },
+            { question: "Nobody knows the answer, do ___?", options: ["he", "she", "they", "it"], answer: 2, explanation: "对于 'nobody', 'everybody' 等不定代词，反意疑问句通常用 'they'。" },
+            { question: "The cat is washing ___. ", options: ["it's", "its", "itself", "it"], answer: 2, explanation: "主语 'cat' (it) 和宾语是同一个，用反身代词 'itself'。" }
+        ];
+
+        var NUM_QUESTIONS_TO_SHOW = 10;
+        var currentQuestions = [];
+        var quizContainer = document.getElementById('quiz-container');
+        var resultsContainer = document.getElementById('results-container');
+        var detailedResultsContainer = document.getElementById('detailed-results');
+        var submitBtn = document.getElementById('submit-btn');
+        var resetBtn = document.getElementById('reset-btn');
+        var encouragementBlock = document.getElementById('encouragement-block');
+        var reportCardContainer = document.getElementById('report-card-container');
+
+        function shuffle(array) {
+            for (var i = array.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+        }
+
+        function loadQuiz() {
+            resultsContainer.style.display = 'none';
+            quizContainer.innerHTML = ''; 
+            submitBtn.style.display = 'inline-block';
+            resetBtn.style.display = 'none';
+            
+            shuffle(allQuestions);
+            currentQuestions = allQuestions.slice(0, NUM_QUESTIONS_TO_SHOW);
+            
+            displayQuestions();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function displayQuestions() {
+            var quizHTML = '';
+            for (var i = 0; i < currentQuestions.length; i++) {
+                var q = currentQuestions[i];
+                quizHTML += '<div class="card"><p class="question-text"><strong>第' + (i + 1) + '题.</strong> ' + q.question + '</p><div class="options-container">' + generateOptionsHTML(q.options, i) + '</div></div>';
+            }
+            quizContainer.innerHTML = quizHTML;
+        }
+
+        function generateOptionsHTML(options, qIndex) {
+            var optionsHTML = '';
+            for (var i = 0; i < options.length; i++) {
+                var id = 'q' + qIndex + 'o' + i;
+                optionsHTML += '<div><input type="radio" id="' + id + '" name="question' + qIndex + '" value="' + i + '"><label for="' + id + '">' + options[i] + '</label></div>';
+            }
+            return optionsHTML;
+        }
+
+        function checkAnswers() {
+            var score = 0;
+            var resultsHTML = '';
+            
+            for (var i = 0; i < currentQuestions.length; i++) {
+                if (!document.querySelector('input[name="question' + i + '"]:checked')) {
+                    alert("您还有题目未完成，请全部作答后再提交！");
+                    return;
+                }
+            }
+
+            for (var i = 0; i < currentQuestions.length; i++) {
+                var q = currentQuestions[i];
+                var selectedOption = document.querySelector('input[name="question' + i + '"]:checked');
+                var userAnswerIndex = parseInt(selectedOption.value, 10);
+                var isCorrect = userAnswerIndex === q.answer;
+                
+                if (isCorrect) score++;
+
+                var resultClass = isCorrect ? 'correct' : 'incorrect';
+                resultsHTML += '<div class="card result-card ' + resultClass + '"><p class="question-text result-question-title">' + q.question + '</p>';
+                resultsHTML += '<p>你的答案: <span class="user-answer ' + resultClass + '">' + q.options[userAnswerIndex] + '</span></p>';
+                if (!isCorrect) {
+                    resultsHTML += '<p>正确答案: <span class="user-answer correct">' + q.options[q.answer] + '</span></p>';
+                }
+                resultsHTML += '<div class="explanation"><strong>解析:</strong> ' + q.explanation + '</div></div>';
+            }
+            
+            var percentage = (score / NUM_QUESTIONS_TO_SHOW) * 100;
+
+            // 填充专业报告单
+            var studentName = document.getElementById('name').value || '未填写';
+            var branchSelect = document.getElementById('branch');
+            var studentBranch = branchSelect.value ? branchSelect.options[branchSelect.selectedIndex].text : '未选择';
+            var studentForm = document.getElementById('form').value || '未填写';
+            
+            document.getElementById('report-name').innerText = studentName;
+            document.getElementById('report-branch').innerText = studentBranch;
+            document.getElementById('report-form').innerText = studentForm;
+            document.getElementById('report-date').innerText = new Date().toLocaleDateString('zh-CN');
+            document.getElementById('report-score').innerText = score + ' / ' + NUM_QUESTIONS_TO_SHOW;
+            document.getElementById('report-percentage').innerText = percentage.toFixed(0) + '%';
+            
+            var performanceEl = document.getElementById('report-performance');
+            var encouragementTextEl = document.getElementById('encouragement-text');
+            var encouragementSvgEl = document.getElementById('encouragement-svg');
+
+            if (percentage >= 90) {
+                performanceEl.innerText = "优秀";
+                performanceEl.style.color = "#28a745";
+                encouragementTextEl.innerText = "太棒了！你的语法基础非常扎实！";
+                encouragementSvgEl.style.fill = "#28a745";
+            } else if (percentage >= 70) {
+                performanceEl.innerText = "良好";
+                performanceEl.style.color = "#007bff";
+                encouragementTextEl.innerText = "很不错！继续努力，你正在通往卓越的路上！";
+                encouragementSvgEl.style.fill = "#007bff";
+            } else if (percentage >= 50) {
+                performanceEl.innerText = "合格";
+                performanceEl.style.color = "#ffc107";
+                encouragementTextEl.innerText = "继续加油！每次练习都是进步的机会。";
+                encouragementSvgEl.style.fill = "#ffc107";
+            } else {
+                performanceEl.innerText = "有待提高";
+                performanceEl.style.color = "#dc3545";
+                encouragementTextEl.innerText = "别灰心，重要的不是起点，而是坚持。我们再来一次！";
+                encouragementSvgEl.style.fill = "#dc3545";
+            }
+            
+            detailedResultsContainer.innerHTML = resultsHTML;
+            resultsContainer.style.display = 'block';
+            reportCardContainer.style.display = 'block';
+            encouragementBlock.style.display = 'flex';
+            submitBtn.style.display = 'none';
+            resetBtn.style.display = 'inline-block';
+            
+            reportCardContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        document.addEventListener('DOMContentLoaded', loadQuiz);
+        submitBtn.addEventListener('click', checkAnswers);
+        resetBtn.addEventListener('click', loadQuiz);
+    })();
+    </script>
+</body>
+</html>
